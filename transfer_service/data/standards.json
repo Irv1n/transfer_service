@@ -1,0 +1,37 @@
+{
+  "10V": {},
+  "1.018V": {
+    "REF1_018-01": {
+      "channel": 5,
+      "value_V": 1.018216302,
+      "u_ref_V": 3e-07,
+      "description": "Fluke 732B #8635705",
+      "cal_date": "",
+      "active": false
+    },
+    "REF1_018-02": {
+      "channel": 6,
+      "value_V": 1.01813769,
+      "u_ref_V": 3e-07,
+      "description": "Fluke 732B #8659701",
+      "cal_date": "",
+      "active": true
+    },
+    "REF1_018-03": {
+      "channel": 7,
+      "value_V": 1.01815862,
+      "u_ref_V": 3e-07,
+      "description": "Fluke 732B #8659702",
+      "cal_date": "",
+      "active": false
+    },
+    "REF1_018-04": {
+      "channel": 8,
+      "value_V": 1.018276609,
+      "u_ref_V": 3e-07,
+      "description": "Fluke 732B #8659703",
+      "cal_date": "",
+      "active": false
+    }
+  }
+}

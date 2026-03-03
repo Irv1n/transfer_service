@@ -119,14 +119,18 @@ class StartRequest(BaseModel):
 
     levels: List[LevelConfig]
 
+
     # Simulation mode (emulates 2182 + 320B + LTE-300)
-    simulation: bool = False
+    # NOTE: Web UI historically sends keys "simulate", "sim_noise_uV_RMS", "sim_temp_C".
+    # We accept both naming styles via aliases.
+    simulation: bool = Field(False, alias="simulate")
     sim_offset_uV: float = 0.0
-    sim_noise_rms_uV: float = 0.05
+    sim_noise_rms_uV: float = Field(0.05, alias="sim_noise_uV_RMS")
     sim_drift_uV_per_min: float = 0.0
     sim_outlier_prob: float = 0.0
     sim_outlier_uV: float = 1.0
-    sim_temp_c: float = 23.0
+    sim_temp_c: float = Field(23.0, alias="sim_temp_C")
+
 
     bme280_address: int = 0x76
 def _env_worker():

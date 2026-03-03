@@ -32,10 +32,6 @@ class Dataproof320B:
         self._w("A00")
         self._w("B00")
 
-    # Дубликат clear?
-    def open_all(self) -> None:
-        self.clear()
-
     def close_a(self, ch: int) -> None:
         self._w(f"A{ch:02d}")
 

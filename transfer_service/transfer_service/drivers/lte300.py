@@ -4,7 +4,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 import glob
-import re
+
 import serial
 
 
@@ -72,29 +72,15 @@ class LTE300:
             pass
 
     def read_temperature_c(self) -> float:
-        # очищаем буфер перед запросом
-        try:
-            self.ser.reset_input_buffer()
-        except Exception:
-            pass
-
         self.ser.write(b"d\r")
-
-        # читаем строку полностью до \n
-        resp = self.ser.readline()
+        resp = self.ser.read_until(b"\r")
         if not resp:
             raise TimeoutError("LTE-300: no response")
-
         s = resp.decode("ascii", errors="replace").strip()
-
-        # извлекаем все числа из строки
-        nums = re.findall(r"[-+]?\d+(?:\.\d+)?", s)
-
-        if len(nums) >= 2:
-            # второе число — температура
-            return float(nums[1])
-
-        raise ValueError(f"LTE-300: bad response: {s!r}")
+        parts = s.split()
+        if len(parts) < 2:
+            raise ValueError(f"LTE-300: bad response: {s!r}")
+        return float(parts[1].replace(",", "."))
 
     def close(self) -> None:
         try:
