@@ -587,17 +587,8 @@ function downloadZip(){
 }
 
 function init(){
-  addDut("10");
-  $("dut10List").querySelector(".dut-id").value = "DUT10-05";
-  $("dut10List").querySelector(".dut-ch").value = "5";
-  addDut("10");
-  const rows10 = $("dut10List").querySelectorAll(".dut-row");
-  rows10[1].querySelector(".dut-id").value = "DUT10-09";
-  rows10[1].querySelector(".dut-ch").value = "9";
 
-  addDut("1018");
-  $("dut1018List").querySelector(".dut-id").value = "DUT1018-11";
-  $("dut1018List").querySelector(".dut-ch").value = "11";
+  // DUT list initially EMPTY
 
   $("addDut10").addEventListener("click", () => addDut("10"));
   $("addDut1018").addEventListener("click", () => addDut("1018"));
@@ -619,11 +610,9 @@ function init(){
   $("btnStdCancel").addEventListener("click", hideStdEditor);
   $("btnStdApply").addEventListener("click", applyStdEditor);
 
-
   $("ref10Select").addEventListener("change", () => applySelectedStandard("10V"));
   $("ref1018Select").addEventListener("change", () => applySelectedStandard("1.018V"));
 
-  // load standards on startup
   loadStandards().catch(err => {
     console.error(err);
     alert("Cannot load standards from server. Check Server URL and that service is running.");

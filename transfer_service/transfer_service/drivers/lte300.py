@@ -72,15 +72,18 @@ class LTE300:
             pass
 
     def read_temperature_c(self) -> float:
+        # запрос "d<CR>"
         self.ser.write(b"d\r")
         resp = self.ser.read_until(b"\r")
         if not resp:
             raise TimeoutError("LTE-300: no response")
-        s = resp.decode("ascii", errors="replace").strip()
+
+        s = resp.decode("ascii", errors="replace").strip()   # "1000.00 0.00"
         parts = s.split()
         if len(parts) < 2:
-            raise ValueError(f"LTE-300: bad response: {s!r}")
-        return float(parts[1].replace(",", "."))
+            raise ValueError(f"LTE-300: expected 'R T', got: {s!r}")
+
+        return float(parts[1])  # температура, °C
 
     def close(self) -> None:
         try:
