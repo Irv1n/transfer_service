@@ -1,0 +1,8 @@
+labenv/
+__pycache__/
+*.pyc
+jobs/
+*.zip
+*.csv
+*.xlsx
+.env

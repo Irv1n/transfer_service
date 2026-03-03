@@ -1,0 +1,57 @@
+{
+  "meter_resource": "GPIB0::20::INSTR",
+  "switch_resource": "GPIB0::24::INSTR",
+  "lte_port": "by-id:FT4QUE2F",
+  "cycles": 3,
+  "settle_after_switch_s": 60.0,
+  "block_duration_s": 120.0,
+  "sample_delay_s": 0.1,
+  "levels": [
+    {
+      "name": "10V",
+      "ref": {
+        "id": "REF10-01",
+        "channel": 3,
+        "value_v": 10.00000012,
+        "u_std_v": 3e-07
+      },
+      "duts": [
+        {
+          "id": "DUT10-05",
+          "channel": 5
+        },
+        {
+          "id": "DUT10-09",
+          "channel": 9
+        }
+      ],
+      "cell_type": "unsaturated",
+      "alpha_uV_per_C": 1.2
+    },
+    {
+      "name": "1.018V",
+      "ref": {
+        "id": "REF1018-01",
+        "channel": 7,
+        "value_v": 1.018000011,
+        "u_std_v": 5e-08
+      },
+      "duts": [
+        {
+          "id": "DUT1018-11",
+          "channel": 11
+        }
+      ],
+      "cell_type": "unsaturated",
+      "alpha_uV_per_C": 1.2
+    }
+  ],
+  "bme280_address": 118,
+  "simulation": true,
+  "sim_offset_uV": 0.3,
+  "sim_noise_rms_uV": 0.05,
+  "sim_drift_uV_per_min": 0.0,
+  "sim_outlier_prob": 0.01,
+  "sim_outlier_uV": 5.0,
+  "sim_temp_c": 23.0
+}

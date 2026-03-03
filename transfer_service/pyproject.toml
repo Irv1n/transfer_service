@@ -1,0 +1,20 @@
+[project]
+name = "transfer_service"
+version = "0.0.13"
+description = "Metrological transfer service: 2182 + Dataproof 320B + LTE-300 + BME280, with temperature reduction to 20C"
+requires-python = ">=3.9"
+dependencies = [
+  "pyvisa>=1.13",
+  "pyserial>=3.5",
+  "openpyxl>=3.1",
+  "tqdm>=4.66",
+  "numpy>=1.24",
+  "fastapi>=0.110",
+  "uvicorn>=0.27",
+  "pydantic>=2.0",
+  "requests>=2.31",
+  "bme280pi>=2.0.0",
+]
+
+[tool.setuptools]
+packages = ["transfer_service"]

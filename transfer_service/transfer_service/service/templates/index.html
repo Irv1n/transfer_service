@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Transfer Service</title>
+  <link rel="stylesheet" href="/static/styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">⚡</div>
+      <div>
+        <div class="title">Transfer Service</div>
+        <div class="subtitle">REF↔DUT comparison • 2182 + Dataproof 320B • per-pair reports</div>
+      </div>
+    </div>
+
+    <div class="top-right">
+      <div class="pill" id="pillStatus"><span class="dot" id="dotStatus"></span><span id="txtStatus">idle</span></div>
+      <button class="btn btn-ghost" id="btnStandards">Standards</button>
+      <button class="btn btn-ghost" id="btnDocs">API Docs</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="grid">
+      <div class="card">
+        <div class="card-h">
+          <div class="card-t">🔌 Подключение</div>
+          <div class="card-s">Сервис работает локально на ПК или на RPi</div>
+        </div>
+
+        <div class="form">
+          <label>Server URL</label>
+          <input id="serverUrl" placeholder="http://127.0.0.1:8000" value="http://127.0.0.1:8000"/>
+
+          <div class="row3">
+            <div>
+              <label>2182 VISA</label>
+              <input id="meterRes" value="GPIB0::20::INSTR"/>
+            </div>
+            <div>
+              <label>320B VISA</label>
+              <input id="switchRes" value="GPIB0::24::INSTR"/>
+            </div>
+            <div>
+              <label>LTE-300 port</label>
+              <input id="ltePort" value="by-id:FT4QUE2F"/>
+            </div>
+          </div>
+
+          <div class="row4">
+            <div><label>cycles</label><input id="cycles" value="3"/></div>
+            <div><label>settle (s)</label><input id="settle" value="60"/></div>
+            <div><label>samples / polarity</label><input id="samplesPerPol" value="20"/></div>
+            <div><label>sample delay (s)</label><input id="sampleDelay" value="0.0"/></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="toggle-row">
+            <div class="toggle">
+              <input type="checkbox" id="simEnable"/>
+              <label for="simEnable">🧪 Simulation (без приборов)</label>
+            </div>
+            <div class="hint">Сервер будет эмулировать 2182+320B+LTE и всё равно создаст CSV/XLSX.</div>
+          </div>
+
+          <div id="simBox" class="simbox hidden">
+            <div class="row5">
+              <div><label>offset (µV)</label><input id="simOffset" value="0.3"/></div>
+              <div><label>noise RMS (µV)</label><input id="simNoise" value="0.05"/></div>
+              <div><label>drift (µV/min)</label><input id="simDrift" value="0.0"/></div>
+              <div><label>outlier p</label><input id="simOutP" value="0.0"/></div>
+              <div><label>outlier (µV)</label><input id="simOutU" value="5.0"/></div>
+            </div>
+            <div class="row2">
+              <div><label>sim temp (°C)</label><input id="simTemp" value="23.0"/></div>
+              <div class="small">Подбор параметров — чтобы увидеть, что алгоритм и отчёты работают.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row2">
+            <div>
+              <label>Cell type</label>
+              <select id="cellType">
+                <option value="saturated">saturated</option>
+                <option value="unsaturated">unsaturated</option>
+              </select>
+            </div>
+            <div>
+              <label>alpha (µV/°C) for unsat</label>
+              <input id="alphaUV" value="0.0"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div class="card-t">🔁 Уровень 10 V</div>
+          <div class="card-s">REF + список DUT (каналы 1..32)</div>
+        </div>
+
+        <div class="form">
+          <div class="row4">
+            <div>
+              <label>REF standard</label>
+              <select id="ref10Select"></select>
+            </div>
+            <div><label>REF ch</label><input id="ref10Ch" readonly/></div>
+            <div><label>REF value (V)</label><input id="ref10Val" readonly/></div>
+            <div><label>u(ref) (V)</label><input id="ref10U" readonly/></div>
+          </div>
+
+          <div class="dut-head">
+            <div>🧷 DUT list</div>
+            <button class="btn btn-small" id="addDut10">＋ Add DUT</button>
+          </div>
+          <div class="dut-list" id="dut10List"></div>
+          <div class="hint">Пример: REF ch3, DUT ch5 и ch9 → будут отдельные файлы на каждую пару (3↔5) и (3↔9).</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div class="card-t">🔁 Уровень 1.018 V</div>
+          <div class="card-s">REF + список DUT (каналы 1..32)</div>
+        </div>
+
+        <div class="form">
+          <div class="row4">
+            <div>
+              <label>REF standard</label>
+              <select id="ref1018Select"></select>
+            </div>
+            <div><label>REF ch</label><input id="ref1018Ch" readonly/></div>
+            <div><label>REF value (V)</label><input id="ref1018Val" readonly/></div>
+            <div><label>u(ref) (V)</label><input id="ref1018U" readonly/></div>
+          </div>
+
+          <div class="dut-head">
+            <div>🧷 DUT list</div>
+            <button class="btn btn-small" id="addDut1018">＋ Add DUT</button>
+          </div>
+          <div class="dut-list" id="dut1018List"></div>
+          <div class="hint">Можно оставить уровень пустым (без DUT) — тогда он не будет измеряться.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom">
+      <div class="card">
+        <div class="actions">
+          <button class="btn btn-primary" id="btnStart">▶ Start transfer</button>
+          <button class="btn" id="btnStop" disabled>■ Stop (позже)</button>
+          <div class="job">
+            <div class="jobline"><span class="label">Job ID:</span><span class="mono" id="jobId">—</span></div>
+            <div class="jobline"><span class="label">Message:</span><span id="jobMsg">—</span></div>
+          </div>
+        </div>
+
+        <div class="progress">
+          <div class="bar"><div class="barin" id="barIn" style="width:0%"></div></div>
+          <div class="pct mono" id="pct">0%</div>
+        </div>
+
+        <div class="env">
+          <div class="envitem">🌡 <span class="mono" id="envT">—</span> °C</div>
+          <div class="envitem">💧 <span class="mono" id="envRH">—</span> %</div>
+          <div class="envitem">🧭 <span class="mono" id="envP">—</span> kPa</div>
+          <div class="envitem">🔥 LTE <span class="mono" id="envLTE">—</span> °C</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="files">
+          <div class="files-h">
+            <div class="card-t">📦 Файлы результата</div>
+            <div class="files-actions">
+              <button class="btn btn-small" id="btnRefreshFiles" disabled>⟳ Refresh</button>
+              <button class="btn btn-small" id="btnZip" disabled>⬇ Download ZIP</button>
+            </div>
+          </div>
+          <div class="files-list" id="filesList">—</div>
+          <div class="hint">Файлы создаются на сервере в папке <span class="mono">jobs/&lt;job_id&gt;/</span>.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+  
+  <div class="modal hidden" id="modalStandards">
+    <div class="modal-card modal-wide">
+      <div class="modal-h">
+  <div id="stdToast" class="toast hidden"></div>
+        <div class="modal-t">Standards (REF values)</div>
+        <button class="btn btn-small" id="btnStandardsClose">✕</button>
+      </div>
+      <div class="modal-b">
+        <div class="hint">
+          Справочник мер сохраняется в проекте: <code>data/standards.json</code>.
+          Здесь редактируем таблицей (Add/Edit/Delete). Для ручного доступа есть Advanced JSON.
+        </div>
+
+        <div class="tabs" style="margin-top:10px">
+          <button class="tab tab-active" id="tabStdTable">Table</button>
+          <button class="tab" id="tabStdJson">Advanced JSON</button>
+        </div>
+
+        <div id="stdTablePane" style="margin-top:10px">
+          <div class="row2" style="align-items:flex-end">
+            <div class="field">
+              <label>Level</label>
+              <select id="stdLevel">
+                <option value="10V">10V</option>
+                <option value="1.018V">1.018V</option>
+              </select>
+            </div>
+            <div class="row2" style="justify-content:flex-end">
+              <button class="btn btn-primary" id="btnStdAdd">＋ Add</button>
+              <button class="btn" id="btnStdSaveAll">💾 Save</button>
+              <button class="btn" id="btnStdReload">↻ Reload</button>
+            </div>
+          </div>
+
+          <div class="table-wrap" style="margin-top:10px">
+            <table class="tbl" id="stdTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Ch</th>
+                  <th>Value (V)</th>
+                  <th>u(ref) (V)</th>
+                  <th>Description</th>
+                  <th>Cal date</th>
+                  <th>Active</th>
+                  <th style="width:140px">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="stdTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="card" id="stdEditor" style="margin-top:12px; display:none">
+            <div class="card-h">
+              <div class="card-t" id="stdEditorTitle">Edit standard</div>
+              <div class="row2">
+                <button class="btn btn-small" id="btnStdCancel">Cancel</button>
+                <button class="btn btn-primary btn-small" id="btnStdApply">Apply</button>
+              </div>
+            </div>
+            <div class="card-b">
+              <div class="grid2">
+                <div class="field">
+                  <label>ID</label>
+                  <input id="stdId" placeholder="REF10-01"/>
+                </div>
+                <div class="field">
+                  <label>Channel</label>
+                  <input id="stdCh" type="number" step="1" placeholder="3"/>
+                </div>
+                <div class="field">
+                  <label>Value (V)</label>
+                  <input id="stdValue" type="number" step="any" placeholder="10.00000012"/>
+                </div>
+                <div class="field">
+                  <label>u(ref) (V)</label>
+                  <input id="stdUref" type="number" step="any" placeholder="3e-7"/>
+                </div>
+                <div class="field">
+                  <label>Description</label>
+                  <input id="stdDesc" placeholder="Fluke 732B #1"/>
+                </div>
+                <div class="field">
+                  <label>Cal date</label>
+                  <input id="stdCalDate" type="date"/>
+                </div>
+                <div class="field">
+                  <label>Active</label>
+                  <select id="stdActive">
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                  </select>
+                </div>
+              </div>
+              <div class="hint" style="margin-top:8px">
+                Примечание: <code>u(ref)</code> — стандартная неопределенность эталона (в Вольтах), она входит в
+                <code>u_combined = sqrt(uA^2 + u_ref^2)</code>.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="stdJsonPane" style="margin-top:10px; display:none">
+          <textarea id="standardsJson" spellcheck="false"></textarea>
+          <div class="row2" style="margin-top:10px">
+            <button class="btn btn-primary" id="btnStandardsSave">💾 Save JSON</button>
+            <button class="btn" id="btnStandardsReload">↻ Reload</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

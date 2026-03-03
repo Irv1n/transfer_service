@@ -1,0 +1,28 @@
+Transfer Service — изменения
+
+v0.0.13_web_fix2 (baseline+):
+- XLSX: лист Raw теперь заполняется и имеет формат "по циклам":
+  * строка-заголовок: "Cycle N" (объединение A:D)
+  * A: результаты + полярности (value_V)
+  * B: показания ЛТ-300 для каждого сэмпла + полярности (lte_temp_C)
+  * C: результаты − полярности (value_V)
+  * D: показания ЛТ-300 для каждого сэмпла − полярности (lte_temp_C)
+- ЛТ-300 фиксируется НА КАЖДЫЙ сэмпл (каждое чтение 2182 сопровождается чтением LTE-300).
+- Web-режим: сохранение raw в XLSX не требует CSV и не падает при raw_csv_path=None.
+
+
+## v0.0.13_web_standards (2026-03-01)
+- WEB: добавлен справочник REF мер (10V и 1.018V) с хранением value_V и u_ref_V в `data/standards.json`
+- WEB: выбор REF меры для сравнения через выпадающий список на странице запуска
+- WEB: страница/модалка Standards для редактирования JSON и сохранения через API
+- API: добавлены эндпоинты `GET /api/standards`, `PUT /api/standards`
+- ENGINE: при запуске измерения REF channel/value/u подставляются из справочника по (level, ref_id)
+## v0.0.13_web_standards_fixpack (2026-03-02)
+- API/Pydantic: исправлена совместимость с Pydantic v2 (RootModel вместо __root__) для payload standards.
+- WEB/UI: исправлен JS (app.js) — устранены ошибки области видимости/скобок, из-за которых модалка Standards не открывалась и падал init().
+- WEB/UI: улучшена читаемость модалки Standards (светлый текст в таблице на тёмном фоне, скролл модалки, видимость чекбокса Active).
+- WEB/UI: убран блокирующий alert("Saved."); при сохранении standards — заменён на неблокирующее toast-уведомление.
+- XLSX: исправлено сохранение отчётов при наличии `raw_cycles` в meta:
+  * `raw_cycles`/`raw_rows` исключены из Summary flatten
+  * любые list/dict/tuple/set при записи в Summary сериализуются в JSON-строку (защита от `ValueError: Cannot convert ... to Excel`)
+- Документация: обновлён CHANGES.txt (этот блок) — описаны изменения после v0.0.13_web_standards.
